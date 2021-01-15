@@ -57,7 +57,7 @@ router.get('/insert-data', function(req, res, next) {
                 "info":  country.info,
                 "tld": country.tld,
                 "cca2": country.cca2,
-                "cca2": country.cca2,
+                "ccn3": country.ccn3,
                 "cca3": country.cca3,
                 "cioc": country.cioc,
                 "independant": country.independant,
