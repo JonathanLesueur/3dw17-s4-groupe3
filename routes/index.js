@@ -136,4 +136,34 @@ router.get('/in-africa', function(req, res, next) {
 
 });
 
+router.get('/dutch', function(req, res, next) {
+    var db = req.db;
+    var params = {
+        TableName : "Countries",
+        KeyConditionExpression: "#languagesKey = :languagesVal",
+        ExpressionAttributeNames:{
+            "#languagesKey": "languages.nld"
+        },
+        ExpressionAttributeValues: {
+            ":languagesVal": "Dutch"
+        }
+    };
+    req.dbClient.query(params, function(err, data) {
+        if (err) {
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("Query succeeded.");
+            data.Items.forEach(function(item) {
+                console.log(" -", item.year + ": " + item.title);
+            });
+        }
+
+        res.render('dutch', { 
+            title: 'Pays parlant le néerlandais',
+            'pays': data
+        });
+    });
+
+});
+
 module.exports = router;
