@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
 });
 
-/* GET home page. */
+
 router.get('/create-table', function(req, res, next) {
     var db = req.db;
     var params = {
@@ -42,7 +42,7 @@ router.get('/create-table', function(req, res, next) {
     });
 });
 
-/* GET home page. */
+
 router.get('/insert-data', function(req, res, next) {
     var db = req.db;
     var table_result = '';
@@ -53,29 +53,9 @@ router.get('/insert-data', function(req, res, next) {
             TableName: "Countries",
             Item: {
                 "region":  country.region,
-                "name": country.name.official,
-                "info":  country.info,
-                "tld": country.tld,
-                "cca2": country.cca2,
-                "ccn3": country.ccn3,
-                "cca3": country.cca3,
-                "cioc": country.cioc,
-                "independant": country.independant,
-                "status": country.status,
-                "unMember": country.unMember,
-                "currencies": country.currencies,
-                "idd": country.idd,
-                "capital": country.capital,
-                "altSpellings": country.altSpellings,
-                "subregion": country.subregion,
+                "name": country.name.common,
                 "languages": country.languages,
-                "translations": country.translations,
-                "latlng": country.latlng,
-                "landlocked": country.landlocked,
-                "borders": country.borders,
-                "area": country.area,
-                "flag": country.flag,
-                "demonyms": country.demonyms
+                "area": country.area
             }
         };
         
@@ -93,6 +73,67 @@ router.get('/insert-data', function(req, res, next) {
         title: 'Insertion des données',
         'table_result': table_result
     });
+});
+
+router.get('/in-europe', function(req, res, next) {
+    var db = req.db;
+    var params = {
+        TableName : "Countries",
+        KeyConditionExpression: "#regionKey = :regionVal",
+        ExpressionAttributeNames:{
+            "#regionKey": "region"
+        },
+        ExpressionAttributeValues: {
+            ":regionVal": "Europe"
+        }
+    };
+    req.dbClient.query(params, function(err, data) {
+        if (err) {
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("Query succeeded.");
+            data.Items.forEach(function(item) {
+                console.log(" -", item.year + ": " + item.title);
+            });
+        }
+
+        res.render('in-europe', { 
+            title: 'Pays européens',
+            'pays': data
+        });
+    });
+
+});
+
+router.get('/in-africa', function(req, res, next) {
+    var db = req.db;
+    var params = {
+        TableName : "Countries",
+        KeyConditionExpression: "#regionKey = :regionVal",
+        ExpressionAttributeNames:{
+            "#regionKey": "region"
+        },
+        ExpressionAttributeValues: {
+            ":regionVal": "Africa"
+        }
+
+    };
+    req.dbClient.query(params, function(err, data) {
+        if (err) {
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("Query succeeded.");
+            data.Items.forEach(function(item) {
+                console.log(item);
+            });
+        }
+
+        res.render('in-africa', { 
+            title: 'Pays africains triés par superficie',
+            'pays': data
+        });
+    });
+
 });
 
 module.exports = router;
