@@ -37,7 +37,7 @@ router.get('/create-table', function(req, res, next) {
         }
         res.render('create-table', { 
             title: 'Création de la table',
-            'table_result': table_result
+            table_result: table_result
         });
     });
 });
@@ -71,7 +71,7 @@ router.get('/insert-data', function(req, res, next) {
     });
     res.render('insert-data', { 
         title: 'Insertion des données',
-        'table_result': table_result
+        table_result: table_result
     });
 });
 
@@ -92,14 +92,11 @@ router.get('/in-europe', function(req, res, next) {
             console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
         } else {
             console.log("Query succeeded.");
-            data.Items.forEach(function(item) {
-                console.log(" -", item.year + ": " + item.title);
-            });
         }
 
         res.render('in-europe', { 
             title: 'Pays européens',
-            'pays': data
+            pays: data
         });
     });
 
@@ -123,14 +120,11 @@ router.get('/in-africa', function(req, res, next) {
             console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
         } else {
             console.log("Query succeeded.");
-            data.Items.forEach(function(item) {
-                console.log(item);
-            });
         }
 
         res.render('in-africa', { 
             title: 'Pays africains triés par superficie',
-            'pays': data
+            pays: data
         });
     });
 
@@ -153,14 +147,68 @@ router.get('/dutch', function(req, res, next) {
             console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
         } else {
             console.log("Query succeeded.");
-            data.Items.forEach(function(item) {
-                console.log(" -", item.year + ": " + item.title);
-            });
         }
 
         res.render('dutch', { 
             title: 'Pays parlant le néerlandais',
-            'pays': data
+            pays: data
+        });
+    });
+
+});
+
+router.get('/between-area', function(req, res, next) {
+    var db = req.db;
+    var params = {
+        TableName : "Countries",
+        FilterExpression: "#area BETWEEN :s1 AND :s2",
+        ExpressionAttributeNames: {
+            "#area": "area",
+        },
+        ExpressionAttributeValues: {
+             ":s1": 400000,
+             ":s2": 500000 
+        }
+    };
+    req.dbClient.scan(params, function(err, data) {
+        if (err) {
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("Query succeeded.");
+        }
+
+        res.render('between-area', { 
+            title: 'Superficie entre 400 000 et 500 000km²',
+            pays: data
+        });
+    });
+
+});
+
+
+router.get('/start-with', function(req, res, next) {
+    var db = req.db;
+    var letter = "D";
+    var params = {
+        TableName : "Countries",
+        FilterExpression: "begins_with(#name,:letter)",
+        ExpressionAttributeNames: {
+            "#name": "name",
+        },
+        ExpressionAttributeValues: {
+             ":letter": letter
+        }
+    };
+    req.dbClient.scan(params, function(err, data) {
+        if (err) {
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("Query succeeded.");
+        }
+
+        res.render('start-with', { 
+            title: 'Pays commençants par la lettre '+ letter,
+            pays: data
         });
     });
 

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <% for(i = 0; i < pays.Items.length; i++) { %>
+        <p><%= pays.Items[i].name %></p>
+    <% } %>
+  </body>
+</html>
